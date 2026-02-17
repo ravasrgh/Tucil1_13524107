@@ -4,12 +4,12 @@
 
 Program ini adalah aplikasi GUI berbasis Python untuk menyelesaikan permainan puzzle "Queens" (seperti yang ada di LinkedIn Games). Program ini dapat mencari solusi penempatan Queen yang valid pada papan N×N dengan constraint warna wilayah (region), baris/kolom unik, dan aturan "tidak boleh bersentuhan" (termasuk diagonal 1 langkah).
 
-## 📋 Deskripsi Masalah
+## Deskripsi Masalah
 
 Diberikan papan berukuran N×N yang terbagi menjadi N wilayah warna berbeda. Tujuan permainan adalah menempatkan **satu Queen di setiap baris, setiap kolom, dan setiap wilayah warna**, dengan syarat tambahan:
 - Tidak ada dua Queen yang saling bersentuhan (termasuk secara diagonal).
 
-## 🚀 Fitur Utama
+## Fitur Utama
 
 - **GUI Interaktif**: Tampilan visual papan permainan.
 - **Dua Algoritma**:
@@ -21,14 +21,14 @@ Diberikan papan berukuran N×N yang terbagi menjadi N wilayah warna berbeda. Tuj
 - **Visualisasi**: Animasi langkah penyelesaian (bisa diatur kecepatannya).
 - **Export Hasil**: Simpan solusi ke file `.txt` atau gambar `.png`.
 
-## 🛠️ Requirements
+## Requirements
 
 Program ini berjalan di **Python 3.x**.
 Library tambahan yang diperlukan:
 - `Pillow` (untuk pemrosesan gambar)
 - `tkinter` (biasanya sudah termasuk dalam instalasi Python standar)
 
-## 📦 Instalasi
+## Instalasi
 
 1. **Clone repository ini**:
    ```bash
@@ -42,7 +42,7 @@ Library tambahan yang diperlukan:
    ```
    *(Jika menggunakan macOS dan mengalami error Tkinter, pastikan menginstall python-tk: `brew install python-tk`)*
 
-## ▶️ Cara Menjalankan
+## Cara Menjalankan
 
 Jalankan file utama program (`tucil1.py`) melalui terminal:
 
@@ -51,23 +51,23 @@ python src/tucil1.py
 ```
 *(atau `python3 src/tucil1.py` tergantung konfigurasi sistem Anda)*
 
-## 🎮 Cara Menggunakan
+## Cara Menggunakan
 
 1. **Buka Program**: Jalankan perintah di atas.
 2. **Load Papan**:
-   - Klik **📂 Load .txt** untuk membuka file konfigurasi teks.
-   - Klik **🖼 Load Image** untuk membuka screenshot puzzle (pastikan gambar grid terlihat jelas).
+   - Klik **Load .txt** untuk membuka file konfigurasi teks.
+   - Klik **Load Image** untuk membuka screenshot puzzle (pastikan gambar grid terlihat jelas).
 3. **Pilih Algoritma**:
    - Pilih radio button **Brute Force** atau **Optimized**.
 4. **Atur Kecepatan (Opsional)**:
    - Geser slider untuk mempercepat atau memperlambat visualisasi pencarian solusi.
 5. **Mulai Penyelesaian**:
-   - Klik tombol **▶ Solve**.
-   - Tombol **⏹ Stop** bisa digunakan untuk menghentikan proses di tengah jalan.
+   - Klik tombol **Solve**.
+   - Tombol **Stop** bisa digunakan untuk menghentikan proses di tengah jalan.
 6. **Simpan Solusi**:
-   - Setelah solusi ditemukan, klik **💾 Save** untuk menyimpan hasil sebagai file teks atau gambar.
+   - Setelah solusi ditemukan, klik **Save** untuk menyimpan hasil sebagai file teks atau gambar.
 
-## 📄 Format Input File (.txt)
+## Format Input File (.txt)
 
 File input harus berupa grid karakter N×N, di mana setiap karakter merepresentasikan warna wilayah (region) sel tersebut.
 
@@ -79,7 +79,7 @@ CCCC
 DDDD
 ```
 
-## 👤 Author
+## Author
 
 **Rava Khoman Tuah Saragih**
 **NIM: 13524107**
