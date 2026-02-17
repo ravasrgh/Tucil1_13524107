@@ -1,12 +1,12 @@
-# Tucil1_13524107 - Queens LinkedIn Solver
+# Queens LinkedIn Solver
 
-**Penyelesai Puzzle Queens LinkedIn dengan Algoritma Brute Force & Backtracking**
+**Penyelesai Puzzle Queens LinkedIn dengan Algoritma Brute Force & Backtracking (Opsional)**
 
-Program ini adalah aplikasi GUI berbasis Python untuk menyelesaikan permainan puzzle "Queens" (seperti yang ada di LinkedIn Games). Program ini dapat mencari solusi penempatan Queen yang valid pada papan N×N dengan constraint warna wilayah (region), baris/kolom unik, dan aturan "tidak boleh bersentuhan" (termasuk diagonal 1 langkah).
+Program ini adalah aplikasi GUI berbasis Python untuk menyelesaikan permainan puzzle "Queens" yang ada di LinkedIn Games. Program ini dapat mencari solusi penempatan Queen yang valid pada papan N×N dengan constraint spesifik.
 
 ## Deskripsi Masalah
 
-Diberikan papan berukuran N×N yang terbagi menjadi N wilayah warna berbeda. Tujuan permainan adalah menempatkan **satu Queen di setiap baris, setiap kolom, dan setiap wilayah warna**, dengan syarat tambahan:
+Diberikan papan berukuran N×N yang terbagi menjadi N wilayah warna berbeda. Tujuan permainan adalah menempatkan satu Queen di setiap baris, setiap kolom, dan setiap wilayah warna, dengan syarat tambahan:
 - Tidak ada dua Queen yang saling bersentuhan (termasuk secara diagonal).
 
 ## Fitur Utama
@@ -23,7 +23,7 @@ Diberikan papan berukuran N×N yang terbagi menjadi N wilayah warna berbeda. Tuj
 
 ## Requirements
 
-Program ini berjalan di **Python 3.x**.
+Program ini berjalan di Python 3.x.
 Library tambahan yang diperlukan:
 - `Pillow` (untuk pemrosesan gambar)
 - `tkinter` (biasanya sudah termasuk dalam instalasi Python standar)
@@ -81,7 +81,4 @@ DDDD
 
 ## Author
 
-**Rava Khoman Tuah Saragih**
-**NIM: 13524107**
-Program Studi Teknik Informatika
-Institut Teknologi Bandung
+Rava Khoman Tuah Saragih - 13524107
