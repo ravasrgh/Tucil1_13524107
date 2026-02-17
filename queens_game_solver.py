@@ -8,12 +8,9 @@ class Board:
         self.grid = []
         self.regions = {}
         self.queens = []
-        self.region_colors = {}  # mapping region letter -> hex color (dari image)
+        self.region_colors = {}
 
     def load_from_file(self, filepath):
-        """
-        Membaca file .txt dan mengubah menjadi data yang bisa dipakai
-        """
         # tambahkan data ke grid
         try:
             with open(filepath) as file:
@@ -68,10 +65,6 @@ class Board:
         return True
 
     def load_from_image(self, filepath):
-        """
-        Membaca gambar papan Queens dan mengekstrak konfigurasi warna.
-        Mendeteksi grid lewat garis border hitam, sampling warna tiap sel.
-        """
         try:
             from PIL import Image
         except ImportError:
@@ -87,12 +80,11 @@ class Board:
         width, height = img.size
         pixels = img.load()
 
-        # Deteksi posisi sel: pertama cari kolom, lalu pakai tengah kolom pertama untuk cari baris
         col_positions = self._find_cell_positions(pixels, width, height, axis="x")
         if len(col_positions) < 2:
             print("Tidak bisa mendeteksi kolom dari gambar.")
             return False
-        # Scan baris di tengah kolom pertama (pasti bukan border)
+
         first_col_center = (col_positions[0][0] + col_positions[0][1]) // 2
         row_positions = self._find_cell_positions(pixels, width, height, axis="y", scan_at=first_col_center)
 
@@ -105,7 +97,6 @@ class Board:
 
         self.n = n_cols
 
-        # Sampling warna dari tengah setiap sel
         raw_colors = []
         for row_start, row_end in row_positions:
             row_colors = []
@@ -116,8 +107,7 @@ class Board:
                 row_colors.append(color)
             raw_colors.append(row_colors)
 
-        # Grouping warna serupa
-        color_groups = []  # list of (representative_color, letter)
+        color_groups = []  
         letter_index = 0
         letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 
@@ -145,7 +135,6 @@ class Board:
             r, g, b = rep_color
             self.region_colors[letter] = f"#{r:02x}{g:02x}{b:02x}"
 
-        # Bangun regions dictionary
         self.regions = {}
         for row in range(self.n):
             for col in range(self.n):
@@ -160,11 +149,6 @@ class Board:
         return True
 
     def _find_cell_positions(self, pixels, width, height, axis="x", scan_at=None):
-        """
-        Mencari posisi sel di sepanjang sumbu tertentu.
-        Mendeteksi border hitam dan mengembalikan list of (start, end) untuk tiap sel.
-        scan_at: posisi di sumbu tegak lurus untuk scanning (default: tengah)
-        """
         if axis == "x":
             length = width
             scan_pos = scan_at if scan_at else height // 4
@@ -174,14 +158,11 @@ class Board:
             scan_pos = scan_at if scan_at else width // 4
             get_pixel = lambda i: pixels[scan_pos, i]
 
-        # Tandai pixel yang gelap (border)
         is_dark = []
         for i in range(length):
             c = get_pixel(i)
-            # Pixel dianggap border jika gelap
             is_dark.append(c[0] < 100 and c[1] < 100 and c[2] < 100)
 
-        # Cari runs of non-dark pixels (= sel berwarna)
         cells = []
         in_cell = False
         start = 0
@@ -195,14 +176,13 @@ class Board:
         if in_cell:
             cells.append((start, length - 1))
 
-        # Filter: buang sel yang terlalu kecil (noise dari anti-aliasing)
         min_size = 10
         cells = [(s, e) for s, e in cells if (e - s + 1) >= min_size]
 
         return cells
 
     def _color_distance(self, c1, c2):
-        """Hitung jarak Euclidean antara dua warna RGB."""
+        # hitung jarak euclidean buat dua warna rgb
         return math.sqrt((c1[0]-c2[0])**2 + (c1[1]-c2[1])**2 + (c1[2]-c2[2])**2)
 
     def save_solution(self, filepath):
@@ -215,7 +195,49 @@ class Board:
                         file.write(self.grid[row][col])
                 file.write("\n")
 
-class Solver:
+class BruteForceSolver:
+    def __init__(self, board):
+        self.iteration_count = 0
+        self.board = board
+
+    def is_valid(self, config):
+        for i in range(self.board.n):
+            for j in range(i+1,self.board.n):
+                if config[i] == config[j]:
+                    return False
+                if self.board.grid[i][config[i]] == self.board.grid[j][config[j]]:
+                    return False
+                if abs(i - j) <= 1 and abs(config[i] - config[j]) <= 1:
+                    return False
+        return True
+
+    def solve(self, on_update=None, get_interval=None):
+        n = self.board.n
+        config = [0 for i in range(n)]
+        while True:
+            self.iteration_count += 1
+
+            if on_update and get_interval:
+                interval = get_interval()
+                if self.iteration_count % interval == 0:
+                    self.board.queens = [(row, config[row]) for row in range(n)]
+                    on_update()
+
+            if self.is_valid(config):
+                self.board.queens = [(row, config[row]) for row in range(n)]
+                return True
+            else:
+                i = n - 1
+                config[i] += 1
+
+                while config[i] >= n:
+                    config[i] = 0
+                    i -= 1
+                    if i < 0:
+                        return False
+                    config[i] += 1
+
+class OptimizedSolver:
     def __init__(self, board):
         self.iteration_count = 0 
         self.board = board
@@ -235,34 +257,36 @@ class Solver:
 
         return True
 
-    def solve(self, row, live_update=False):
+    def solve(self, row, on_update=None, get_interval=None):
         if row == self.board.n:
             return True
     
         for col in range(self.board.n):  
-            self.iteration_count += 1 
+            self.iteration_count += 1
+
+            if on_update and get_interval:
+                interval = get_interval()
+                if self.iteration_count % interval == 0:
+                    on_update()
+
             if self.is_valid(row,col):
                 self.board.queens.append((row,col))
-                if live_update:
-                    print("\033[H\033[J", end="")
-                    self.board.display()  
-                    time.sleep(0.02) 
                 self.cols_used.add(col)
                 self.regions_used.add(self.board.grid[row][col])
-                if self.solve(row+1, live_update):
+                if self.solve(row+1, on_update, get_interval):
                     return True
                 self.board.queens.pop()
                 self.cols_used.remove(col)
                 self.regions_used.remove(self.board.grid[row][col])
         return False
 
-
+#main
 if __name__ == "__main__":
     filepath = input("Masukkan path file test case (.txt): ")
     board = Board()
     result = board.load_from_file(filepath)
     if result != False:
-        solver = Solver(board)
+        solver = OptimizedSolver(board)
         start = time.time()
         found = solver.solve(0)
         end = time.time()
