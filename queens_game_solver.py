@@ -40,7 +40,10 @@ class Board:
     def display(self):
         for row in range(self.n):
             for col in range(self.n):
-                print(self.grid[row][col],end="")
+                if (row,col) in self.queens:
+                    print("#",end="")
+                else:
+                    print(self.grid[row][col],end="")
             print()
 
     def validate(self):
@@ -73,15 +76,41 @@ class Solver:
         if self.board.grid[row][col] in self.regions_used:
             return False
         
-        if abs(self.board.queens[row] - row) <= 1 and abs(self.board.queens[col] - col) <= 1:
-            return False
+        for (queen_row, queen_col) in self.board.queens:
+            if abs(queen_row - row) <= 1 and abs(queen_col - col) <= 1:
+                return False
+
+        return True
+
+    def solve(self, row):
+        if row == self.board.n:
+            return True
+    
+        for col in range(self.board.n):  
+            self.iteration_count += 1 
+            if self.is_valid(row,col):
+                self.board.queens.append((row,col))
+                self.cols_used.add(col)
+                self.regions_used.add(self.board.grid[row][col])
+                if self.solve(row+1):
+                    return True
+                self.board.queens.pop()
+                self.cols_used.remove(col)
+                self.regions_used.remove(self.board.grid[row][col])
+        return False
 
 
 
 board = Board()
 result = board.load_from_file("test/input1.txt")
 if result != False:
-    board.display()
+    solver = Solver(board)
+    if solver.solve(0):
+        print("Solusi ditemukan!")
+        board.display()
+        print(f"Banyak kasus yang ditinjau: {solver.iteration_count}")
+    else:
+        print("Tidak ada solusi.")
 
 
         
