@@ -260,84 +260,71 @@ class QueensGUI:
             title_frame, text="Rava Khoman Tuah Saragih - 13524107",
             font=("Arial", 11), bg="#2C3E50", fg="#BDC3C7"
         ).pack()
-
         top_frame = tk.Frame(self.root, bg="#2C3E50", pady=5)
         top_frame.pack(fill=tk.X, padx=10)
-
         self.btn_load = tk.Button(
             top_frame, text="📂 Load .txt", command=self.load_file,
-            font=("Arial", 11, "bold"), bg="#3498DB", fg="white",
+            font=("Arial", 11, "bold"), bg="white", fg="black",
             relief=tk.FLAT, padx=15, pady=5, cursor="hand2"
         )
         self.btn_load.pack(side=tk.LEFT, padx=5)
 
         self.btn_load_img = tk.Button(
             top_frame, text="🖼 Load Image", command=self.load_image,
-            font=("Arial", 11, "bold"), bg="#E67E22", fg="white",
+            font=("Arial", 11, "bold"), bg="white", fg="black",
             relief=tk.FLAT, padx=15, pady=5, cursor="hand2"
         )
         self.btn_load_img.pack(side=tk.LEFT, padx=5)
-
         self.btn_solve = tk.Button(
             top_frame, text="▶ Solve", command=self._on_solve_click,
-            font=("Arial", 11, "bold"), bg="#27AE60", fg="white",
+            font=("Arial", 11, "bold"), bg="white", fg="black",
             relief=tk.FLAT, padx=15, pady=5, cursor="hand2",
             state=tk.DISABLED
         )
         self.btn_solve.pack(side=tk.LEFT, padx=5)
-
         self.btn_stop = tk.Button(
             top_frame, text="⏹ Stop", command=self.stop_solve,
-            font=("Arial", 11, "bold"), bg="#C0392B", fg="white",
+            font=("Arial", 11, "bold"), bg="white", fg="black",
             relief=tk.FLAT, padx=15, pady=5, cursor="hand2",
             state=tk.DISABLED
         )
         self.btn_stop.pack(side=tk.LEFT, padx=5)
-
         self.btn_save = tk.Button(
             top_frame, text="💾 Save", command=self.save_solution,
-            font=("Arial", 11, "bold"), bg="#8E44AD", fg="white",
+            font=("Arial", 11, "bold"), bg="white", fg="black",
             relief=tk.FLAT, padx=15, pady=5, cursor="hand2",
             state=tk.DISABLED
         )
         self.btn_save.pack(side=tk.LEFT, padx=5)
-
         self.canvas_frame = tk.Frame(self.root, bg="#2C3E50")
         self.canvas_frame.pack(padx=10, pady=5)
-
         self.canvas = tk.Canvas(
             self.canvas_frame, width=400, height=400,
             bg="#34495E", highlightthickness=0
         )
         self.canvas.pack()
-
         bottom_frame = tk.Frame(self.root, bg="#2C3E50", pady=10)
         bottom_frame.pack(fill=tk.X, padx=10)
-
         self.label_status = tk.Label(
             bottom_frame, text="Silahkan load file terlebih dahulu.",
             font=("Arial", 11), bg="#2C3E50", fg="#ECF0F1"
         )
         self.label_status.pack()
-
         self.label_time = tk.Label(
             bottom_frame, text="",
             font=("Arial", 10), bg="#2C3E50", fg="#BDC3C7"
         )
         self.label_time.pack()
-
         self.label_iter = tk.Label(
             bottom_frame, text="",
             font=("Arial", 10), bg="#2C3E50", fg="#BDC3C7"
         )
         self.label_iter.pack()
-
         self.label_real_time = tk.Label(
             bottom_frame, text="",
             font=("Arial", 10, "bold"), bg="#2C3E50", fg="#F39C12"
         )
         self.label_real_time.pack()
-
         algo_frame = tk.Frame(self.root, bg="#34495E", pady=10, padx=15)
         algo_frame.pack(fill=tk.X, padx=10, pady=(5, 0))
 
@@ -345,10 +332,8 @@ class QueensGUI:
             algo_frame, text="Pilih Algoritma:",
             font=("Arial", 11, "bold"), bg="#34495E", fg="#ECF0F1"
         ).pack(anchor=tk.W)
-
         bf_frame = tk.Frame(algo_frame, bg="#34495E")
         bf_frame.pack(fill=tk.X, pady=(5, 2))
-
         tk.Radiobutton(
             bf_frame, text="Brute Force",
             variable=self.solve_mode, value="brute_force",
@@ -362,7 +347,6 @@ class QueensGUI:
         ).pack(anchor=tk.W, padx=20)
         opt_frame = tk.Frame(algo_frame, bg="#34495E")
         opt_frame.pack(fill=tk.X, pady=(2, 0))
-
         tk.Radiobutton(
             opt_frame, text="Optimized",
             variable=self.solve_mode, value="optimized",
@@ -375,15 +359,12 @@ class QueensGUI:
             text="Backtracking dengan validasi per baris. Memangkas cabang yang tidak valid lebih awal untuk efisiensi.",
             font=("Arial", 9), bg="#34495E", fg="#95A5A6", wraplength=500, justify=tk.LEFT
         ).pack(anchor=tk.W, padx=20)
-
         slider_frame = tk.Frame(self.root, bg="#2C3E50", pady=5)
         slider_frame.pack(fill=tk.X, padx=10)
-
         tk.Label(
             slider_frame, text="Update setiap:",
             font=("Arial", 10), bg="#2C3E50", fg="#BDC3C7"
         ).pack(side=tk.LEFT, padx=5)
-
         self.speed_slider = tk.Scale(
             slider_frame, from_=0, to=1000, orient=tk.HORIZONTAL,
             bg="#34495E", fg="#ECF0F1", troughcolor="#2C3E50",
@@ -402,23 +383,19 @@ class QueensGUI:
         self.iter_entry.pack(side=tk.LEFT, padx=5)
         self.iter_entry.bind("<Return>", self._on_entry_change)
         self.iter_entry.bind("<FocusOut>", self._on_entry_change)
-
         tk.Label(
             slider_frame, text="iterasi",
             font=("Arial", 10), bg="#2C3E50", fg="#BDC3C7"
         ).pack(side=tk.LEFT, padx=2)
 
     def _on_solve_click(self):
-        """Triggered by the Solve button — reads the selected algorithm"""
         self.start_solve(self.solve_mode.get())
 
     def stop_solve(self):
-        """Stop the currently running solver"""
         self.stop_solving = True
         self.label_status.config(text="⏹ Solving dihentikan.", fg="#E74C3C")
 
     def _assign_colors(self):
-        """Assign warna unik ke setiap region. Pakai warna asli dari image jika ada."""
         self.color_map = {}
         if self.board.region_colors:
             self.color_map = dict(self.board.region_colors)
@@ -431,13 +408,10 @@ class QueensGUI:
         self.canvas.delete("all")
         if self.board is None or self.board.n == 0:
             return
-
         n = self.board.n
         self.cell_size = min(400 // n, 80)
         canvas_size = self.cell_size * n
-
         self.canvas.config(width=canvas_size, height=canvas_size)
-
         for row in range(n):
             for col in range(n):
                 x1 = col * self.cell_size
@@ -452,7 +426,6 @@ class QueensGUI:
                     x1, y1, x2, y2,
                     fill=color, outline="#2C3E50", width=2
                 )
-
                 if (row, col) in self.board.queens:
                     cx = (x1 + x2) // 2
                     cy = (y1 + y2) // 2
@@ -554,13 +527,11 @@ class QueensGUI:
         self.label_time.config(text="Waktu berjalan: 0 ms")
         self.label_iter.config(text="")
         self.label_real_time.config(text="")
-
         self.board.queens = []
         self.solving = True
         self.stop_solving = False
         self.solve_start_time = time.time()
         self._real_time_shown = False
-
         self._result_queue = multiprocessing.Queue()
         self._silent_process = multiprocessing.Process(
             target=_silent_solve,
