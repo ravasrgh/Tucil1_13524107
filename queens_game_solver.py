@@ -1,3 +1,5 @@
+import time
+
 class Board:
     def __init__(self):
         self.n = 0
@@ -62,6 +64,16 @@ class Board:
         
         return True
 
+    def save_solution(self, filepath):
+        with open(filepath, "w") as file:
+            for row in range(self.n):
+                for col in range(self.n):
+                    if (row, col) in self.queens:
+                        file.write("#")
+                    else:
+                        file.write(self.grid[row][col])
+                file.write("\n")
+
 class Solver:
     def __init__(self, board):
         self.iteration_count = 0 
@@ -100,15 +112,25 @@ class Solver:
         return False
 
 
-
+filepath = input("Masukkan path file test case (.txt): ")
 board = Board()
-result = board.load_from_file("test/input1.txt")
+result = board.load_from_file(filepath)
 if result != False:
     solver = Solver(board)
-    if solver.solve(0):
+    start = time.time()
+    found = solver.solve(0)
+    end = time.time()
+    elapsed_time = (end - start) * 1000
+    if found:
         print("Solusi ditemukan!")
         board.display()
+        print(f"Waktu pencarian: {elapsed_time:.2f} ms")
         print(f"Banyak kasus yang ditinjau: {solver.iteration_count}")
+        simpan = input("Apakah Anda ingin menyimpan solusi? (Ya/Tidak): ")
+        if simpan == "Ya":
+            nama_file = input("Masukkan nama file output: ")
+            board.save_solution(nama_file)
+            print(f"Solusi disimpan ke {nama_file}")
     else:
         print("Tidak ada solusi.")
 
