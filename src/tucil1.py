@@ -263,34 +263,34 @@ class QueensGUI:
         top_frame = tk.Frame(self.root, bg="#2C3E50", pady=5)
         top_frame.pack(fill=tk.X, padx=10)
         self.btn_load = tk.Button(
-            top_frame, text="📂 Load .txt", command=self.load_file,
+            top_frame, text="Load .txt", command=self.load_file,
             font=("Arial", 11, "bold"), bg="white", fg="black",
             relief=tk.FLAT, padx=15, pady=5, cursor="hand2"
         )
         self.btn_load.pack(side=tk.LEFT, padx=5)
 
         self.btn_load_img = tk.Button(
-            top_frame, text="🖼 Load Image", command=self.load_image,
+            top_frame, text="Load Image", command=self.load_image,
             font=("Arial", 11, "bold"), bg="white", fg="black",
             relief=tk.FLAT, padx=15, pady=5, cursor="hand2"
         )
         self.btn_load_img.pack(side=tk.LEFT, padx=5)
         self.btn_solve = tk.Button(
-            top_frame, text="▶ Solve", command=self._on_solve_click,
+            top_frame, text="Solve", command=self._on_solve_click,
             font=("Arial", 11, "bold"), bg="white", fg="black",
             relief=tk.FLAT, padx=15, pady=5, cursor="hand2",
             state=tk.DISABLED
         )
         self.btn_solve.pack(side=tk.LEFT, padx=5)
         self.btn_stop = tk.Button(
-            top_frame, text="⏹ Stop", command=self.stop_solve,
+            top_frame, text="Stop", command=self.stop_solve,
             font=("Arial", 11, "bold"), bg="white", fg="black",
             relief=tk.FLAT, padx=15, pady=5, cursor="hand2",
             state=tk.DISABLED
         )
         self.btn_stop.pack(side=tk.LEFT, padx=5)
         self.btn_save = tk.Button(
-            top_frame, text="💾 Save", command=self.save_solution,
+            top_frame, text="Save", command=self.save_solution,
             font=("Arial", 11, "bold"), bg="white", fg="black",
             relief=tk.FLAT, padx=15, pady=5, cursor="hand2",
             state=tk.DISABLED
@@ -545,11 +545,8 @@ class QueensGUI:
         self._poll_board_state()
 
     def _poll_board_state(self):
-        if not self.solving:
-            return
-        self.draw_board()
-        elapsed = (time.time() - self.solve_start_time) * 1000
-        self.label_time.config(text=f"Waktu berjalan: {elapsed:.0f} ms")
+        """Monitor progress and capture results from the silent solver process."""
+        # Try to show results if they haven't been shown yet
         if not self._real_time_shown:
             try:
                 result = self._result_queue.get_nowait()
@@ -564,7 +561,16 @@ class QueensGUI:
             except Exception:
                 pass
 
-        self.root.after(50, self._poll_board_state)
+        # If solver is still running, update time and schedule next poll
+        if self.solving:
+            self.draw_board()
+            elapsed = (time.time() - self.solve_start_time) * 1000
+            self.label_time.config(text=f"Waktu berjalan: {elapsed:.0f} ms")
+            self.root.after(50, self._poll_board_state)
+        elif not self._real_time_shown:
+            # Even if solving is False, if results haven't appeared, keep polling for a bit
+            # This handles cases where the solver is extremely fast (< 50ms)
+            self.root.after(50, self._poll_board_state)
 
     def _animated_solver(self):
         def on_update():
@@ -600,6 +606,17 @@ class QueensGUI:
             self.root.after(0, self._enable_buttons, found)
 
     def _show_final_results(self, found, total_elapsed):
+        # Update metrics one last time if they haven't been captured yet
+        if not self._real_time_shown:
+            try:
+                # Use a small timeout to let the silent process finish if it's right behind
+                result = self._result_queue.get(timeout=0.05)
+                self.label_real_time.config(text=f"Waktu eksekusi algoritma: {result['elapsed']:.4f} ms")
+                self.label_iter.config(text=f"Banyak kasus yang ditinjau: {result['iterations']}")
+                self._real_time_shown = True
+            except:
+                pass
+
         if found:
             self.label_status.config(text="\u2705 Solusi ditemukan!", fg="#2ECC71")
         else:
